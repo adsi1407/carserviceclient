@@ -13,7 +13,7 @@ export class OwnerService {
   }
 
   getAll(): Observable<any> {
-    return this.http.get(this.API);
+    return this.http.get(this.OWNER_API);
   }
 
   get(id: string) {
