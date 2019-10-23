@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CarService } from '../shared/car/car.service';
 import { GiphyService } from '../shared/giphy/giphy.service';
 import { NgForm } from '@angular/forms';
+import { OwnerService } from '../shared/owner/owner.service';
 
 @Component({
   selector: 'app-car-edit',
@@ -12,13 +13,16 @@ import { NgForm } from '@angular/forms';
 })
 export class CarEditComponent implements OnInit, OnDestroy {
   car: any = {};
+  owners: Array<any>;
+  owner: any = {};
 
   sub: Subscription;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
               private carService: CarService,
-              private giphyService: GiphyService) {
+              private giphyService: GiphyService,
+              private ownerService: OwnerService) {
   }
 
   ngOnInit() {
@@ -28,8 +32,24 @@ export class CarEditComponent implements OnInit, OnDestroy {
         this.carService.get(id).subscribe((car: any) => {
           if (car) {
             this.car = car;
+            console.log(car);
             this.car.href = car._links.self.href;
             this.giphyService.get(car.name).subscribe(url => car.giphyUrl = url);
+
+            if(this.car.ownerDni) {
+
+              this.ownerService.getAll().subscribe(data => {
+                this.owners = data._embedded.owners;
+                for (let i = 0; i < this.owners.length; i++) {
+                  if(car.ownerDni = this.owners[i].dni)
+                  this.owner = this.owners[i];
+                }
+                console.log(this.owner);
+              });
+            } else {
+              console.log(`Car with id '${id}' doesn't have owner`);
+            }
+            
           } else {
             console.log(`Car with id '${id}' not found, returning to list`);
             this.gotoList();
