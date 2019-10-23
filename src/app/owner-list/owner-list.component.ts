@@ -14,6 +14,10 @@ export class OwnerListComponent implements OnInit {
   ngOnInit() {
     this.ownerService.getAll().subscribe(data => {
       this.owners = data._embedded.owners;
+      for (let i = 0; i < this.owners.length; i++) {
+        this.owners[i].id = this.owners[i]._links.owner.href.split('http://thawing-chamber-47973.herokuapp.com/owners/')[1];
+        console.log(this.owners[i]);
+      }
     });
   }
 
